@@ -1,0 +1,200 @@
+<!--
+Vendor:		Nutanix
+Product:	Prism Central
+Version:	{Version}
+Plugin:		v1.0
+Reference:	https://github.com/benwa/CyberArk-Nutanix-Prism-Central
+File:		Chains
+-->
+<WSChains name="NutanixPrismCentral">
+	<GlobalSettings></GlobalSettings>
+	<!-- All of the requests that will be used in the chains below. (These should follow the format of WSInvoker, name is a required attribute) -->
+	<Requests>
+		<RequestWrapper>
+			<request name="ListUser">
+				<version>2</version>
+				<general>
+					<endpoint>/api/iam/v4.0.b1/authn/users?$limit=1&amp;$filter=username eq '{{username}}'</endpoint>
+					<method>GET</method>
+				</general>
+				<header>
+					<Accept>application/json</Accept>
+					<Authorization>Basic {{username}}:{{pmpass}}</Authorization>
+					<User-Agent>Integration/1.0 (CyberArk, CPM, 1)</User-Agent>
+				</header>
+				<body></body>
+			</request>
+		</RequestWrapper>
+
+		<RequestWrapper>
+			<request name="ListUserNewPassword">
+				<version>2</version>
+				<general>
+					<endpoint>/api/iam/v4.0.b1/authn/users?$limit=1&amp;$filter=username eq '{{username}}'</endpoint>
+					<method>GET</method>
+				</general>
+				<header>
+					<Accept>application/json</Accept>
+					<Authorization>Basic {{username}}:{{pmnewpass}}</Authorization>
+					<User-Agent>Integration/1.0 (CyberArk, CPM, 1)</User-Agent>
+				</header>
+				<body></body>
+			</request>
+		</RequestWrapper>
+
+		<RequestWrapper>
+			<request name="ReconcileListUser">
+				<version>2</version>
+				<general>
+					<endpoint>/api/iam/v4.0.b1/authn/users?$limit=1&amp;$filter=username eq '{{username}}'</endpoint>
+					<method>GET</method>
+				</general>
+				<header>
+					<Accept>application/json</Accept>
+					<Authorization>Basic {{extrapass3\username}}:{{pmextrapass3}}</Authorization>
+					<User-Agent>Integration/1.0 (CyberArk, CPM, 1)</User-Agent>
+				</header>
+				<body></body>
+			</request>
+		</RequestWrapper>
+
+		<RequestWrapper>
+			<request name="ChangePassword">
+				<version>2</version>
+				<general>
+					<endpoint>/api/iam/v4.0.b1/authn/users/$actions/change-password</endpoint>
+					<method>POST</method>
+				</general>
+				<header>
+					<Accept>application/json</Accept>
+					<Content-Type>application/json</Content-Type>
+					<Authorization>Basic {{username}}:{{pmpass}}</Authorization>
+					<User-Agent>Integration/1.0 (CyberArk, CPM, 1)</User-Agent>
+				</header>
+				<body>
+					<json> { "username": "{{username}}", "oldPassword": "{{pmpass}}", "newPassword": "{{pmnewpass}}" } </json>
+				</body>
+			</request>
+		</RequestWrapper>
+
+		<RequestWrapper>
+			<request name="ResetPassword">
+				<version>2</version>
+				<general>
+					<endpoint>/api/iam/v4.0.b1/authn/users/{{parsed/extId}}/$actions/reset-password</endpoint>
+					<method>POST</method>
+				</general>
+				<header>
+					<Accept>application/json</Accept>
+					<Content-Type>application/json</Content-Type>
+					<Authorization>Basic {{extrapass3\username}}:{{pmextrapass3}}</Authorization>
+					<User-Agent>Integration/1.0 (CyberArk, CPM, 1)</User-Agent>
+				</header>
+				<body>
+					<json> { "newPassword": "{{pmnewpass}}" } </json>
+				</body>
+			</request>
+		</RequestWrapper>
+	</Requests>
+
+	<!-- Fails are similar to a link with the next state of END except it ends unsuccessfully. Here	you can specify the return code and pvwaMessage -->
+	<Fails>
+		<Fail name="FAILBadRequest" rc="8101" message="Status Code = 400. Bad Request" />
+		<Fail name="FAILUnauthorized" rc="8102" message="Status Code = 401. The request sent by the CPM could not be authenticated" />
+		<Fail name="FAILForbidden" rc="8103" message="Status Code = 403. Access to the requested (valid) URL by the client is forbidden" />
+		<Fail name="FAILNotFound" rc="8104" message="Status Code = 404. Resource not found." />
+		<Fail name="FAILMethodNotFound" rc="8105" message="Status Code = 405. Method not allowed." />
+		<Fail name="FAILRequestConflict" rc="8106" message="Status Code = 409. Request conflict with current state of the server" />
+		<Fail name="FAILInternalServerError" rc="8107" message="Status Code = 500. The server cannot process the request for an unknown reason" />
+		<Fail name="FAILWebServer" rc="8108" message="Status Code = 501. The server cannot process the request for an unknown reason" />
+		<Fail name="FAILGeneral" rc="8109" message="General Error. Check the logs for more information." />
+	</Fails>
+
+	<Chains>
+		<!-- Verify Action -->
+		<Chain name="verifypass">
+			<Link name="GetExternalIdentifierLink" request="ListUser">
+				<StatusCode value="200" next="END" />
+				<StatusCode value="400" next="FAILBadRequest" />
+				<StatusCode value="401" next="FAILUnauthorized" />
+				<StatusCode value="403" next="FAILForbidden" />
+				<StatusCode value="404" next="FAILNotFound" />
+				<StatusCode value="405" next="FAILMethodNotFound" />
+				<StatusCode value="409" next="FAILRequestConflict" />
+				<StatusCode value="500" next="FAILInternalServerError" />
+				<StatusCode value="501" next="FAILWebServer" />
+				<StatusCode value="*" next="FAILGeneral" />
+			</Link>
+		</Chain>
+
+		<!-- Change Action -->
+		<Chain name="changepass">
+			<Link name="ChangePasswordLink" request="ChangePassword">
+				<StatusCode value="200" next="VerifyNewPasswordLink" />
+				<StatusCode value="400" next="FAILBadRequest" />
+				<StatusCode value="401" next="FAILUnauthorized" />
+				<StatusCode value="403" next="FAILForbidden" />
+				<StatusCode value="404" next="FAILNotFound" />
+				<StatusCode value="405" next="FAILMethodNotFound" />
+				<StatusCode value="409" next="FAILRequestConflict" />
+				<StatusCode value="500" next="FAILInternalServerError" />
+				<StatusCode value="501" next="FAILWebServer" />
+				<StatusCode value="*" next="FAILGeneral" />
+			</Link>
+			<Link name="VerifyNewPasswordLink" request="ListUserNewPassword">
+				<StatusCode value="200" next="END" />
+				<StatusCode value="400" next="FAILBadRequest" />
+				<StatusCode value="401" next="FAILUnauthorized" />
+				<StatusCode value="403" next="FAILForbidden" />
+				<StatusCode value="404" next="FAILNotFound" />
+				<StatusCode value="405" next="FAILMethodNotFound" />
+				<StatusCode value="409" next="FAILRequestConflict" />
+				<StatusCode value="500" next="FAILInternalServerError" />
+				<StatusCode value="501" next="FAILWebServer" />
+				<StatusCode value="*" next="FAILGeneral" />
+			</Link>
+		</Chain>
+
+		<!-- Reconcile Action -->
+		<Chain name="reconcilepass">
+			<Link name="GetExternalIdentifierLink" request="ReconcileListUser">
+				<StatusCode value="200" next="ResetPasswordLink">
+					<Parse name="parsed/extId" type="json" value="data[0].extId" />
+				</StatusCode>
+				<StatusCode value="400" next="FAILBadRequest" />
+				<StatusCode value="401" next="FAILUnauthorized" />
+				<StatusCode value="403" next="FAILForbidden" />
+				<StatusCode value="404" next="FAILNotFound" />
+				<StatusCode value="405" next="FAILMethodNotFound" />
+				<StatusCode value="409" next="FAILRequestConflict" />
+				<StatusCode value="500" next="FAILInternalServerError" />
+				<StatusCode value="501" next="FAILWebServer" />
+				<StatusCode value="*" next="FAILGeneral" />
+			</Link>
+			<Link name="ResetPasswordLink" request="ResetPassword">
+				<StatusCode value="200" next="VerifyNewPasswordLink" />
+				<StatusCode value="400" next="FAILBadRequest" />
+				<StatusCode value="401" next="FAILUnauthorized" />
+				<StatusCode value="403" next="FAILForbidden" />
+				<StatusCode value="404" next="FAILNotFound" />
+				<StatusCode value="405" next="FAILMethodNotFound" />
+				<StatusCode value="409" next="FAILRequestConflict" />
+				<StatusCode value="500" next="FAILInternalServerError" />
+				<StatusCode value="501" next="FAILWebServer" />
+				<StatusCode value="*" next="FAILGeneral" />
+			</Link>
+			<Link name="VerifyNewPasswordLink" request="ListUserNewPassword">
+				<StatusCode value="200" next="END" />
+				<StatusCode value="400" next="FAILBadRequest" />
+				<StatusCode value="401" next="FAILUnauthorized" />
+				<StatusCode value="403" next="FAILForbidden" />
+				<StatusCode value="404" next="FAILNotFound" />
+				<StatusCode value="405" next="FAILMethodNotFound" />
+				<StatusCode value="409" next="FAILRequestConflict" />
+				<StatusCode value="500" next="FAILInternalServerError" />
+				<StatusCode value="501" next="FAILWebServer" />
+				<StatusCode value="*" next="FAILGeneral" />
+			</Link>
+		</Chain>
+	</Chains>
+</WSChains>
