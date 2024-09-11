@@ -2,7 +2,7 @@
 Vendor:		Nutanix
 Product:	Prism Central
 Version:	{Version}
-Plugin:		v1.0
+Plugin:		v1.0.0
 Reference:	https://github.com/benwa/CyberArk-Nutanix-Prism-Central
 File:		Chains
 -->
