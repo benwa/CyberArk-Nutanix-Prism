@@ -1,12 +1,12 @@
 <!--
 Vendor:		Nutanix
-Product:	Prism Central
+Product:	Prism
 Version:	{Version}
-Plugin:		v1.0.0
-Reference:	https://github.com/benwa/CyberArk-Nutanix-Prism-Central
+Plugin:		v1.0.1
+Reference:	https://github.com/benwa/CyberArk-Nutanix-Prism
 File:		Chains
 -->
-<WSChains name="NutanixPrismCentral">
+<WSChains name="NutanixPrism">
 	<GlobalSettings></GlobalSettings>
 	<!-- All of the requests that will be used in the chains below. (These should follow the format of WSInvoker, name is a required attribute) -->
 	<Requests>
