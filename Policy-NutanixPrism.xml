@@ -1,6 +1,6 @@
 <Device Name="Operating System">
 	<Policies>
-		<Policy ID="NutanixPrismCentral" PlatformBaseID="WSChains" PlatformBaseType="WSChains" PlatformBaseProtocol="HTTPS" AutoChangeOnAdd="No" AutoVerifyOnAdd="No">
+		<Policy ID="NutanixPrism" PlatformBaseID="WSChains" PlatformBaseType="WSChains" PlatformBaseProtocol="HTTPS" AutoChangeOnAdd="No" AutoVerifyOnAdd="No">
 			<Properties>
 				<Required>
 					<Property Name="Address" />
