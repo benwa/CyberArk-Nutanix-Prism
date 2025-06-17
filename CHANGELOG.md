@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 [//]: # (## [Unreleased])
 
+## [1.0.2] - 2025-06-17
+
+## Changed
+- Updated API endpoint to the GA version
+
 ## [1.0.1] - 2024-09-18
 
 ### Changed
@@ -18,6 +23,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Verify password
 - Reconcile password
 
-[unreleased]: https://github.com/benwa/CyberArk-Nutanix-Prism/compare/v1.0.1...HEAD
+[unreleased]: https://github.com/benwa/CyberArk-Nutanix-Prism/compare/v1.0.2...HEAD
+[1.0.2]: https://github.com/benwa/CyberArk-Nutanix-Prism/releases/tag/v1.0.2
 [1.0.1]: https://github.com/benwa/CyberArk-Nutanix-Prism/releases/tag/v1.0.1
 [1.0.0]: https://github.com/benwa/CyberArk-Nutanix-Prism/releases/tag/v1.0.0

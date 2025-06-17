@@ -14,7 +14,7 @@ File:		Chains
 			<request name="ListUser">
 				<version>2</version>
 				<general>
-					<endpoint>/api/iam/v4.0.b1/authn/users?$limit=1&amp;$filter=username eq '{{username}}'</endpoint>
+					<endpoint>/api/iam/v4.0/authn/users?$limit=1&amp;$filter=username eq '{{username}}'</endpoint>
 					<method>GET</method>
 				</general>
 				<header>
@@ -30,7 +30,7 @@ File:		Chains
 			<request name="ListUserNewPassword">
 				<version>2</version>
 				<general>
-					<endpoint>/api/iam/v4.0.b1/authn/users?$limit=1&amp;$filter=username eq '{{username}}'</endpoint>
+					<endpoint>/api/iam/v4.0/authn/users?$limit=1&amp;$filter=username eq '{{username}}'</endpoint>
 					<method>GET</method>
 				</general>
 				<header>
@@ -46,7 +46,7 @@ File:		Chains
 			<request name="ReconcileListUser">
 				<version>2</version>
 				<general>
-					<endpoint>/api/iam/v4.0.b1/authn/users?$limit=1&amp;$filter=username eq '{{username}}'</endpoint>
+					<endpoint>/api/iam/v4.0/authn/users?$limit=1&amp;$filter=username eq '{{username}}'</endpoint>
 					<method>GET</method>
 				</general>
 				<header>
@@ -62,7 +62,7 @@ File:		Chains
 			<request name="ChangePassword">
 				<version>2</version>
 				<general>
-					<endpoint>/api/iam/v4.0.b1/authn/users/$actions/change-password</endpoint>
+					<endpoint>/api/iam/v4.0/authn/users/$actions/change-password</endpoint>
 					<method>POST</method>
 				</general>
 				<header>
@@ -81,7 +81,7 @@ File:		Chains
 			<request name="ResetPassword">
 				<version>2</version>
 				<general>
-					<endpoint>/api/iam/v4.0.b1/authn/users/{{parsed/extId}}/$actions/reset-password</endpoint>
+					<endpoint>/api/iam/v4.0/authn/users/{{parsed/extId}}/$actions/reset-password</endpoint>
 					<method>POST</method>
 				</general>
 				<header>

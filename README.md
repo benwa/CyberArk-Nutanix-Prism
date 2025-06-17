@@ -4,7 +4,7 @@ Update Nutanix Prism IAM Identities via WSChains
 
 Entirely not possible without the guidance of [aaearon](https://github.com/aaearon) with his [blog on WSChains](https://timschindler.blog/creating-a-cyberark-central-policy-manager-plugin-for-an-api-using-wschains). Thank you!
 
-This relies on the v4 IAM API. As of this writing, this is in RC and requires either pc.2023.3+ or AOS 6.7+.
+This relies on the v4 IAM API, which requires [pc.2024.3 or later and AOS 7.0](https://www.nutanix.dev/api-reference-v4/#:~:text=Identity%20and%20Access,7.0).
 
 ## Installation
 
